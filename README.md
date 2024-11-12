@@ -176,4 +176,5 @@ Distribución de eficiencias:
 Se observa que algunas categorías tienen eficiencia máxima (1.0), mientras que otras tienen valores inferiores, lo que sugiere que hay algunas áreas donde el gasto en salud no está siendo tan efectivo en la reducción de la mortalidad.
 
 Url del Rstudio: 
+
 https://qo-dc.github.io/Optimization/Index.html
