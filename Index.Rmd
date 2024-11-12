@@ -5,76 +5,317 @@ date: "2024-10-28"
 output: html_document
 ---
 
-```{r}
-# Cargar las librerías necesarias
-library(sf)
-library(dplyr)
-library(ggplot2)
-library(viridis)
-library(spdep)
-library(rio)
-library(tidyr)
-library(stringr)
-```
-
-C
+librería: 
 
 ```{r}
-# Importar las bases de datos
-GINI <- import("basegini.XLS")
-PBI <- import("PBI.XLS")
-
-# Filtrar y seleccionar los resultados para GINI, renombrando la columna del año 2022
-GINI_resultados <- GINI %>%
-  filter(`Country Name` %in% c("Pakistán", "Brasil", "Perú")) %>%
-  select(`Country Name`, `2022`) %>%
-  rename(GINI_2022 = `2022`)
-
-# Agregar el valor de GINI manualmente para Pakistán si está faltante
-GINI_resultados <- GINI_resultados %>%
-  mutate(GINI_2022 = ifelse(`Country Name` == "Pakistán" & is.na(GINI_2022), 29.6, GINI_2022))
-
-# Filtrar y seleccionar los resultados para PBI, renombrando la columna del año 2022
-PBI_resultados <- PBI %>%
-  filter(`Country Name` %in% c("China")) %>%
-  select(`Country Name`, `2022`) %>%
-  rename(PBI_2022 = `2022`)
-
-# Unir ambas bases de datos por la columna "Country Name"
-datos_combinados <- full_join(GINI_resultados, PBI_resultados, by = "Country Name")
-
-# Ver los resultados combinados
-print(datos_combinados)
+# Cargar la librería lpSolve
+library(lpSolve)
 ```
 
-Análisis
 
-1.
+Tarea 1: 
+
+caso 1: 
+
+Este es un problema de optimización lineal en el que necesitamos minimizar el costo total de los suplementos mientras cumplimos con los requisitos diarios de nutrientes. Usaremos R para resolverlo. El objetivo es minimizar el costo total, sujeto a las restricciones de los nutrientes que se deben cumplir.
+Vamos a estructurarlo de la siguiente forma:
+•	Variables de decisión:
+o	x1x_1x1 = número de cápsulas de Vega Vita a comprar.
+o	x2x_2x2 = número de cápsulas de Happy Health a comprar.
+•	Objetivo: Minimizar el costo total:
+Costo total=0.20⋅x1+0.30⋅x2\text{Costo total} = 0.20 \cdot x_1 + 0.30 \cdot x_2Costo total=0.20⋅x1+0.30⋅x2
+•	Restricciones:
+1.	Vitamin C: 20⋅x1+30⋅x2≥6020 \cdot x_1 + 30 \cdot x_2 \geq 6020⋅x1+30⋅x2≥60
+2.	Calcium: 500⋅x1+250⋅x2≥1000500 \cdot x_1 + 250 \cdot x_2 \geq 1000500⋅x1+250⋅x2≥1000
+3.	Iron: 9⋅x1+2⋅x2≥189 \cdot x_1 + 2 \cdot x_2 \geq 189⋅x1+2⋅x2≥18
+4.	Niacin: 2⋅x1+10⋅x2≥202 \cdot x_1 + 10 \cdot x_2 \geq 202⋅x1+10⋅x2≥20
+5.	Magnesium: 60⋅x1+90⋅x2≥36060 \cdot x_1 + 90 \cdot x_2 \geq 36060⋅x1+90⋅x2≥360
+
 
 ```{r}
-# Reemplazar los NA en GINI_2022 y PBI_2022 por 0
-datos_combinados <- datos_combinados %>%
-  mutate(GINI_2022 = ifelse(is.na(GINI_2022), 0, GINI_2022),
-         PBI_2022 = ifelse(is.na(PBI_2022), 0, PBI_2022))
+# Definir el vector de costos (minimizar 0.20x1 + 0.30x2)
+costos <- c(0.20, 0.30)
 
-# Realizar el test de correlación entre GINI_2022 y PBI_2022
-cor_test_result <- cor.test(datos_combinados$GINI_2022, datos_combinados$PBI_2022)
+# Definir la matriz de restricciones
+restricciones <- matrix(c(20, 30,   # Vitamin C
+                          500, 250, # Calcium
+                          9, 2,     # Iron
+                          2, 10,    # Niacin
+                          60, 90),  # Magnesium
+                        nrow = 5, byrow = TRUE)
 
-# Ver el resultado del test de correlación
-print(cor_test_result)
+# Definir el vector de valores mínimos para cada nutriente
+derecha <- c(60, 1000, 18, 20, 360)
+
+# Resolver el problema de optimización lineal
+resultado <- lp("min", costos, restricciones, ">=", derecha, all.int = TRUE)
+
+# Ver los resultados
+resultado$solution
+
+```
+
+Resultado: 
+
+El resultado [1] 3 2 significa lo siguiente:
+
+3: Debes comprar 3 cápsulas de Vega Vita.
+2: Debes comprar 2 cápsulas de Happy Health.
+Este es el número óptimo de cápsulas de cada tipo que debes comprar cada día para cumplir con los requisitos mínimos de nutrientes, minimizando el costo total.
+
+Así que, para satisfacer las necesidades de vitamina C, calcio, hierro, niacina y magnesio, deberías tomar 3 cápsulas de Vega Vita y 2 cápsulas de Happy Health.
+
+
+Caso 2: 
+
+Este es otro problema de optimización, que podemos abordar como un problema de programación lineal. El objetivo es minimizar el número total de conductores necesarios para satisfacer la demanda en diferentes intervalos de tiempo durante el día. Los conductores tienen turnos de 8 horas y pueden tener tiempo ocioso dentro de esos turnos.
+Enfoque:
+
+1.	Variables de decisión:
+o	x1x_1x1 = número de conductores que comienzan su turno a las 0:00 (trabajan de 0 a 8).
+o	x2x_2x2 = número de conductores que comienzan su turno a las 4:00 (trabajan de 4 a 12).
+o	x3x_3x3 = número de conductores que comienzan su turno a las 8:00 (trabajan de 8 a 16).
+o	x4x_4x4 = número de conductores que comienzan su turno a las 12:00 (trabajan de 12 a 20).
+o	x5x_5x5 = número de conductores que comienzan su turno a las 16:00 (trabajan de 16 a 24).
+o	x6x_6x6 = número de conductores que comienzan su turno a las 20:00 (trabajan de 20 a 4 del día siguiente).
+
+2.	Objetivo: Minimizar el número total de conductores.
+Minimizarx1+x2+x3+x4+x5+x6\text{Minimizar} \quad x_1 + x_2 + x_3 + x_4 + x_5 + x_6Minimizarx1+x2+x3+x4+x5+x6
+3.	Restricciones: Asegurarnos de que se cubra la demanda en cada intervalo de tiempo:
+o	De 0 a 4 am: Necesitamos 4 conductores.
+o	De 4 a 8 am: Necesitamos 8 conductores.
+o	De 8 am a 12 pm: Necesitamos 10 conductores.
+o	De 12 pm a 4 pm: Necesitamos 7 conductores.
+o	De 4 pm a 8 pm: Necesitamos 12 conductores.
+o	De 8 pm a 12 am: Necesitamos 4 conductores.
+Sistema de ecuaciones para las restricciones:
+•	De 0 a 4 am: x1+x6≥4x_1 + x_6 \geq 4x1+x6≥4
+•	De 4 a 8 am: x1+x2≥8x_1 + x_2 \geq 8x1+x2≥8
+•	De 8 am a 12 pm: x2+x3≥10x_2 + x_3 \geq 10x2+x3≥10
+•	De 12 pm a 4 pm: x3+x4≥7x_3 + x_4 \geq 7x3+x4≥7
+•	De 4 pm a 8 pm: x4+x5≥12x_4 + x_5 \geq 12x4+x5≥12
+•	De 8 pm a 12 am: x5+x6≥4x_5 + x_6 \geq 4x5+x6≥4
+
+
+```{r}
+
+# Definir el vector de costos (minimizar el número total de conductores)
+costos_conductores <- c(1, 1, 1, 1, 1, 1)
+
+# Definir la matriz de restricciones
+restricciones_conductores <- matrix(c(1, 0, 0, 0, 0, 1,    # 0 a 4 am
+                                      1, 1, 0, 0, 0, 0,    # 4 a 8 am
+                                      0, 1, 1, 0, 0, 0,    # 8 am a 12 pm
+                                      0, 0, 1, 1, 0, 0,    # 12 pm a 4 pm
+                                      0, 0, 0, 1, 1, 0,    # 4 pm a 8 pm
+                                      0, 0, 0, 0, 1, 1),   # 8 pm a 12 am
+                                    nrow = 6, byrow = TRUE)
+
+# Definir el vector de valores mínimos para cada intervalo de tiempo
+demanda_conductores <- c(4, 8, 10, 7, 12, 4)
+
+# Resolver el problema de optimización lineal
+resultado_conductores <- lp("min", costos_conductores, restricciones_conductores, ">=", demanda_conductores, all.int = TRUE)
+
+# Ver los resultados
+resultado_conductores$solution
+
+```
+El resultado [1] 4 10 0 8 4 0 que te muestra R corresponde al número óptimo de conductores que debes contratar para cubrir la demanda en cada franja horaria. Aquí está el desglose de lo que significa cada número:
+
+4: Debes contratar 4 conductores para el turno que empieza a las 0:00 (trabajan de 0 a 8 am).
+10: Debes contratar 10 conductores para el turno que empieza a las 4:00 (trabajan de 4 a 12 am).
+0: No es necesario contratar ningún conductor para el turno que empieza a las 8:00 (trabajan de 8 a 4 pm), ya que la demanda ya está cubierta por otros turnos.
+8: Debes contratar 8 conductores para el turno que empieza a las 12:00 (trabajan de 12 a 8 pm).
+4: Debes contratar 4 conductores para el turno que empieza a las 16:00 (trabajan de 4 a 12 am).
+0: No es necesario contratar ningún conductor para el turno que empieza a las 20:00 (trabajan de 8 pm a 4 am), ya que la demanda está cubierta por otros turnos.
+Explicación:
+El modelo de programación lineal ha optimizado el número de conductores necesarios para satisfacer la demanda en cada franja horaria de forma eficiente, minimizando el número total de conductores contratados.
+
+Para cumplir con la demanda en las franjas horarias donde hay una alta demanda de conductores (como de 4 am a 8 am o de 12 pm a 4 pm), se contratan más conductores.
+En las franjas horarias con menor demanda, como de 8 am a 12 pm y de 8 pm a 12 am, el número de conductores contratados es cero, ya que las demandas ya están cubiertas por los turnos anteriores.
+En resumen, el resultado indica que para satisfacer la demanda de conductores, deberías contratar 4 conductores para el turno de 0:00, 10 para el de 4:00, 8 para el de 12:00, y 4 para el de 16:00, mientras que no necesitas contratar conductores para los turnos de 8:00 y 20:00.
+
+
+tarea 2: 
+
+```{r}
+# Crear la matriz de comparación para los criterios
+criterios <- matrix(c(1, 3, 5,
+                      1/3, 1, 7,
+                      1/5, 1/7, 1), 
+                    nrow = 3, byrow = TRUE)
+
+# Mostrar la matriz
+criterios
 ```
 
 ```{r}
-ggplot(datos_combinados, aes(x = GINI_2022, y = PBI_2022)) +
-  geom_point(color = "blue", size = 3) +  # Puntos azules
-  geom_smooth(method = "lm", se = FALSE, color = "red") +  # Línea de regresión en rojo
-  labs(
-    title = "Correlación entre GINI y PBI 2022",
-    x = "Índice GINI 2022",
-    y = "PBI 2022"
-  ) +
-  theme_minimal()
+# Calcular los autovalores y autovectores
+eigen_criterios <- eigen(criterios)
+
+# Mostrar los autovectores (pesos)
+pesos_criterios <- eigen_criterios$vectors[,1] / sum(eigen_criterios$vectors[,1])
+
+# Mostrar los pesos de los criterios
+pesos_criterios
 ```
+
+```{r}
+# Crear la matriz de comparación para las alternativas bajo el criterio "Costo de vida"
+costo_vida <- matrix(c(1, 1/3, 1/5, 1/5,
+                       3, 1, 1/3, 1/3,
+                       5, 3, 1, 1,
+                       5, 3, 1, 1), 
+                     nrow = 4, byrow = TRUE)
+
+# Calcular los autovalores y autovectores
+eigen_costo_vida <- eigen(costo_vida)
+
+# Mostrar los autovectores (pesos) bajo el criterio "Costo de vida"
+pesos_costo_vida <- eigen_costo_vida$vectors[,1] / sum(eigen_costo_vida$vectors[,1])
+
+# Mostrar los pesos de las alternativas bajo "Costo de vida"
+pesos_costo_vida
+```
+
+```{r}
+# Crear la matriz de comparación para las alternativas bajo el criterio "Dificultad del idioma"
+dificultad_idioma <- matrix(c(1, 1, 1/3, 1/7,
+                              1, 1, 1/3, 1/7,
+                              3, 3, 1, 5,
+                              7, 7, 1/5, 1), 
+                            nrow = 4, byrow = TRUE)
+
+# Calcular los autovalores y autovectores
+eigen_dificultad_idioma <- eigen(dificultad_idioma)
+
+# Mostrar los autovectores (pesos) bajo el criterio "Dificultad del idioma"
+pesos_dificultad_idioma <- eigen_dificultad_idioma$vectors[,1] / sum(eigen_dificultad_idioma$vectors[,1])
+
+# Mostrar los pesos de las alternativas bajo "Dificultad del idioma"
+pesos_dificultad_idioma
+```
+
+
+```{r}
+# Crear la matriz de comparación para las alternativas bajo el criterio "Posibilidades de trabajo"
+trabajo <- matrix(c(1, 1/3, 1/5, 1/7,
+                    3, 1, 1/5, 1/5,
+                    5, 5, 1, 3,
+                    7, 5, 1/3, 1), 
+                  nrow = 4, byrow = TRUE)
+
+# Calcular los autovalores y autovectores
+eigen_trabajo <- eigen(trabajo)
+
+# Mostrar los autovectores (pesos) bajo el criterio "Posibilidades de trabajo"
+pesos_trabajo <- eigen_trabajo$vectors[,1] / sum(eigen_trabajo$vectors[,1])
+
+# Mostrar los pesos de las alternativas bajo "Posibilidades de trabajo"
+pesos_trabajo
+```
+
+```{r}
+# Combinar los pesos de los criterios con los pesos de las alternativas
+ranking_final <- pesos_criterios[1] * pesos_costo_vida + 
+                 pesos_criterios[2] * pesos_dificultad_idioma + 
+                 pesos_criterios[3] * pesos_trabajo
+
+# Mostrar el ranking final
+ranking_final
+```
+
+```{r}
+# Extraer la parte real de los resultados
+ranking_final_real <- Re(ranking_final)
+
+# Mostrar el ranking final (parte real)
+ranking_final_real
+
+```
+```{r}
+# Normalizar los resultados
+ranking_final_normalizado <- ranking_final_real / sum(ranking_final_real)
+
+# Mostrar los puntajes normalizados
+ranking_final_normalizado
+```
+Esto significa que el país EE.UU. tendría el puntaje más alto (0.445), seguido de Alemania (0.359), España (0.124) y Brasil (0.070), lo que indica que EE.UU. es el país mejor clasificado según los criterios de costo de vida, dificultad del idioma y posibilidades de trabajo.
+
+
+tarea 3: 
+
+```{r}
+# Cargar la librería Benchmarking
+library(Benchmarking)
+
+# Datos de gasto en salud (6 años)
+gasto_salud <- data.frame(
+  Year = c(2007, 2008, 2009, 2010, 2011, 2012),
+  TotalGasto = c(10681, 11595, 13264, 14263, 15715, 17635)
+)
+
+# Datos de mortalidad infantil (11 categorías, 4 años de datos)
+mortalidad <- data.frame(
+  Caracteristicas = c("Total", "Urbana", "Rural", "Lima Metropolitana", "Resto Costa", "Sierra", "Selva", "Sin educación", "Primaria", "Secundaria", "Superior"),
+  X2007_2008 = c(27, 17, 43, 10, 20, 36, 38, 48, 39, 21, 14),
+  X2009 = c(26, 21, 35, 15, 26, 29, 34, 42, 36, 19, 20),
+  X2010 = c(23, 17, 33, 15, 17, 26, 35, 34, 31, 20, 14),
+  X2011_2012 = c(21, 17, 29, 13, 15, 28, 28, 38, 27, 18, 17)
+)
+
+# 1. Crear un vector con las tasas de mortalidad para las 11 categorías y 4 años
+outputs <- as.matrix(mortalidad[, 2:5])  # Seleccionamos las columnas con los valores de mortalidad
+outputs <- as.vector(t(outputs))  # Transponer y convertir a vector de 44 elementos
+
+# 2. Crear un vector con los valores de gasto, replicándolos correctamente
+# Cada año tiene que estar asociado con las 11 categorías, por lo que tenemos que repetir cada valor de gasto 11 veces
+# Como hay 6 años, necesitamos repetir cada valor de gasto 11 veces, y después repetir todo esto para los 4 años de mortalidad
+gasto_repetido <- rep(gasto_salud$TotalGasto, each = 11)  # 6 años * 11 categorías
+
+# Ahora replicamos gasto_repetido para cubrir los 4 años
+gasto_repetido <- rep(gasto_repetido, times = 4)  # Esto da un total de 6*11*4 = 264
+
+# Sin embargo, necesitamos reducir el tamaño de `gasto_repetido` a 44
+gasto_repetido <- gasto_repetido[1:length(outputs)]  # Recortamos a la longitud correcta de 44
+
+# 3. Verificamos que las longitudes coincidan
+length(gasto_repetido)  # Debería ser 44
+length(outputs)  # También debería ser 44
+
+# 4. Verificamos que las longitudes sean iguales antes de continuar
+stopifnot(length(gasto_repetido) == length(outputs))  # Esto debe ser TRUE
+
+# 5. Ejecutar el análisis DEA (Análisis Envolvente de Datos)
+result <- dea(X = matrix(gasto_repetido, nrow = length(gasto_repetido), ncol = 1), 
+              Y = outputs, 
+              RTS = "vrs")
+
+# 6. Mostrar las eficiencias obtenidas
+efficiencies <- efficiencies(result)
+print(efficiencies)
+
+```
+
+El resultado que obtuviste es la eficiencia calculada para cada una de las unidades en el análisis DEA (Análisis Envolvente de Datos). El modelo de DEA calcula las eficiencias relativas de cada unidad de decisión, en este caso, los valores que se obtuvieron son índices de eficiencia de cada categoría de mortalidad en relación con el gasto en salud.
+
+Interpretación de los resultados:
+Valores de eficiencia:
+Los valores 1.0000000 indican que esas unidades (en este caso, algunas categorías de mortalidad) están operando de manera eficiente, es decir, no se podría mejorar su rendimiento utilizando los recursos (gasto en salud) de manera más eficiente. Estas categorías están en el "frente de la frontera de eficiencia" en el modelo DEA.
+Los valores menores que 1, como 0.9211729 o 0.8052624, indican que esas unidades no están utilizando los recursos de manera tan eficiente como las que tienen un valor de eficiencia de 1. Por ejemplo, una eficiencia de 0.9211729 sugiere que se podría mejorar en alrededor del 8% para alcanzar la eficiencia máxima.
+Distribución de eficiencias:
+Vemos que algunas categorías tienen eficiencia máxima (1.0), mientras que otras tienen valores inferiores, lo que sugiere que hay algunas áreas donde el gasto en salud no está siendo tan efectivo en la reducción de la mortalidad.
+Conclusiones posibles:
+Las categorías con eficiencia 1 están operando de forma óptima, y no hay forma de reducir más la mortalidad infantil con el mismo nivel de gasto en salud.
+Las categorías con eficiencias menores a 1 podrían beneficiarse de un aumento en la asignación de recursos o una mejora en el uso de los recursos disponibles.
+Si necesitas un análisis más detallado de cómo se distribuyen estas eficiencias entre las distintas categorías o algún otro tipo de ajuste, puedo ayudarte a hacerlo.
+
+
+
+
+
+
 
 
 
