@@ -9,13 +9,16 @@ Este es un problema de optimización lineal en el que necesitamos minimizar el c
 Se va a estructurarlo de la siguiente forma:
 
 •	Variables de decisión:
+
 o	x1x_1x1 = número de cápsulas de Vega Vita a comprar.
 o	x2x_2x2 = número de cápsulas de Happy Health a comprar.
 
 •	Objetivo: Minimizar el costo total:
+
 Costo total=0.20⋅x1+0.30⋅x2\text{Costo total} = 0.20 \cdot x_1 + 0.30 \cdot x_2Costo total=0.20⋅x1+0.30⋅x2
 
 •	Restricciones:
+
 1.	Vitamin C: 20⋅x1+30⋅x2≥6020 \cdot x_1 + 30 \cdot x_2 \geq 6020⋅x1+30⋅x2≥60
 2.	Calcium: 500⋅x1+250⋅x2≥1000500 \cdot x_1 + 250 \cdot x_2 \geq 1000500⋅x1+250⋅x2≥1000
 3.	Iron: 9⋅x1+2⋅x2≥189 \cdot x_1 + 2 \cdot x_2 \geq 189⋅x1+2⋅x2≥18
@@ -26,6 +29,7 @@ Resultado: [1] 3 2
 
 3: Debe comprar 3 cápsulas de Vega Vita.
 2: Debe comprar 2 cápsulas de Happy Health.
+
 Este es el número óptimo de cápsulas de cada tipo que debes comprar cada día para cumplir con los requisitos mínimos de nutrientes, minimizando el costo total.
 
 Así que, para satisfacer las necesidades de vitamina C, calcio, hierro, niacina y magnesio, deberías tomar 3 cápsulas de Vega Vita y 2 cápsulas de Happy Health.
@@ -35,6 +39,7 @@ Así que, para satisfacer las necesidades de vitamina C, calcio, hierro, niacina
 El objetivo es minimizar el número total de conductores necesarios para satisfacer la demanda en diferentes intervalos de tiempo durante el día. Los conductores tienen turnos de 8 horas y pueden tener tiempo ocioso dentro de esos turnos.
 
 1.	Variables de decisión:
+
 o	x1x_1x1 = número de conductores que comienzan su turno a las 0:00 (trabajan de 0 a 8).
 o	x2x_2x2 = número de conductores que comienzan su turno a las 4:00 (trabajan de 4 a 12).
 o	x3x_3x3 = número de conductores que comienzan su turno a las 8:00 (trabajan de 8 a 16).
@@ -42,10 +47,12 @@ o	x4x_4x4 = número de conductores que comienzan su turno a las 12:00 (trabajan 
 o	x5x_5x5 = número de conductores que comienzan su turno a las 16:00 (trabajan de 16 a 24).
 o	x6x_6x6 = número de conductores que comienzan su turno a las 20:00 (trabajan de 20 a 4 del día siguiente).
 
-2.	Objetivo: Minimizar el número total de conductores.
+3.	Objetivo: Minimizar el número total de conductores.
+
 Minimizarx1+x2+x3+x4+x5+x6\text{Minimizar} \quad x_1 + x_2 + x_3 + x_4 + x_5 + x_6Minimizarx1+x2+x3+x4+x5+x6
 
-4.	Restricciones: Asegurarnos de que se cubra la demanda en cada intervalo de tiempo:
+5.	Restricciones: Asegurarnos de que se cubra la demanda en cada intervalo de tiempo:
+
 o	De 0 a 4 am: Necesitamos 4 conductores.
 o	De 4 a 8 am: Necesitamos 8 conductores.
 o	De 8 am a 12 pm: Necesitamos 10 conductores.
@@ -54,6 +61,7 @@ o	De 4 pm a 8 pm: Necesitamos 12 conductores.
 o	De 8 pm a 12 am: Necesitamos 4 conductores.
 
 Sistema de ecuaciones para las restricciones:
+
 •	De 0 a 4 am: x1+x6≥4x_1 + x_6 \geq 4x1+x6≥4
 •	De 4 a 8 am: x1+x2≥8x_1 + x_2 \geq 8x1+x2≥8
 •	De 8 am a 12 pm: x2+x3≥10x_2 + x_3 \geq 10x2+x3≥10
@@ -76,6 +84,7 @@ El modelo de programación lineal ha optimizado el número de conductores necesa
 
 Para cumplir con la demanda en las franjas horarias donde hay una alta demanda de conductores (como de 4 am a 8 am o de 12 pm a 4 pm), se contratan más conductores.
 En las franjas horarias con menor demanda, como de 8 am a 12 pm y de 8 pm a 12 am, el número de conductores contratados es cero, ya que las demandas ya están cubiertas por los turnos anteriores.
+
 En resumen, el resultado indica que para satisfacer la demanda de conductores, deberías contratar 4 conductores para el turno de 0:00, 10 para el de 4:00, 8 para el de 12:00, y 4 para el de 16:00, mientras que no necesitas contratar conductores para los turnos de 8:00 y 20:00.
 
 # Tarea 2: 
