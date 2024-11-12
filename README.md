@@ -163,6 +163,8 @@ Pasos usados para el proceso de análisis:
 2. Crear un vetor de output y otro de input
 3. finalmente realizar el análisis de eficiencia
 
+![image](https://github.com/user-attachments/assets/6dfb65d7-d4b7-4d41-a4d2-a8148081acfe)
+
 Interpretación de los resultados:
 
 Valores de eficiencia:
