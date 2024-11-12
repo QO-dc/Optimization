@@ -143,13 +143,13 @@ Esto significa que el país EE.UU. tendría el puntaje más alto (0.445), seguid
 ## Tarea 3: 
 
 1. Variable de Entrada: Gasto en Salud
-El gasto destinado al sector salud (2007-2023) es un indicador de los recursos asignados a cada región o municipio. Esta información es usada como una variable de entrada (input), ya que representa el esfuerzo financiero para mejorar la salud en las áreas que estás comparando.
+El gasto destinado al sector salud (2007-2023) es un indicador de los recursos asignados a cada región. Esta información es usada como una variable de entrada (input), ya que representa el esfuerzo financiero para mejorar la salud en las áreas que estás comparando.
 
 2. Variable de Salida: Tasa de Mortalidad en la Niñez
 La tasa de mortalidad en la niñez es la variable de salida (output) porque mide un resultado directo de la efectividad del gasto en salud. Disminuciones en esta tasa pueden indicar una mejora en la eficiencia de los servicios de salud.
 
 3. Posible Estructura de Análisis
-Objetivo: Determinar qué tan eficientemente los recursos en salud han contribuido a la mejora de la tasa de mortalidad infantil en distintas áreas (por ejemplo, regiones o municipios).
+Objetivo: Determinar qué tan eficientemente los recursos en salud han contribuido a la mejora de la tasa de mortalidad infantil en áreas commo "Total", "Urbana", "Rural", "Lima Metropolitana", "Resto Costa", "Sierra", "Selva", "Sin educación", "Primaria", "Secundaria", "Superior". 
 
 Método: Utilizar herramientas de análisis de eficiencia, como el Análisis Envolvente de Datos (DEA), para comparar la eficiencia relativa de los municipios o regiones en el uso de sus recursos.
 
