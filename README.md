@@ -41,10 +41,15 @@ El objetivo es minimizar el número total de conductores necesarios para satisfa
 1.	Variables de decisión:
 
 o	x1x_1x1 = número de conductores que comienzan su turno a las 0:00 (trabajan de 0 a 8).
+
 o	x2x_2x2 = número de conductores que comienzan su turno a las 4:00 (trabajan de 4 a 12).
+
 o	x3x_3x3 = número de conductores que comienzan su turno a las 8:00 (trabajan de 8 a 16).
+
 o	x4x_4x4 = número de conductores que comienzan su turno a las 12:00 (trabajan de 12 a 20).
+
 o	x5x_5x5 = número de conductores que comienzan su turno a las 16:00 (trabajan de 16 a 24).
+
 o	x6x_6x6 = número de conductores que comienzan su turno a las 20:00 (trabajan de 20 a 4 del día siguiente).
 
 3.	Objetivo: Minimizar el número total de conductores.
@@ -54,10 +59,15 @@ Minimizarx1+x2+x3+x4+x5+x6\text{Minimizar} \quad x_1 + x_2 + x_3 + x_4 + x_5 + x
 5.	Restricciones: Asegurarnos de que se cubra la demanda en cada intervalo de tiempo:
 
 o	De 0 a 4 am: Necesitamos 4 conductores.
+
 o	De 4 a 8 am: Necesitamos 8 conductores.
+
 o	De 8 am a 12 pm: Necesitamos 10 conductores.
+
 o	De 12 pm a 4 pm: Necesitamos 7 conductores.
+
 o	De 4 pm a 8 pm: Necesitamos 12 conductores.
+
 o	De 8 pm a 12 am: Necesitamos 4 conductores.
 
 Sistema de ecuaciones para las restricciones:
