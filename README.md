@@ -140,7 +140,7 @@ Finalmente se combinana realizando un ranking final teniendo como resultado:
 
 Esto significa que el país EE.UU. tendría el puntaje más alto (0.445), seguido de Alemania (0.359), España (0.124) y Brasil (0.070), lo que indica que EE.UU. es el país mejor clasificado según los criterios de costo de vida, dificultad del idioma y posibilidades de trabajo.
 
-Tarea 3: 
+## Tarea 3: 
 
 1. Variable de Entrada: Gasto en Salud
 El gasto destinado al sector salud (2007-2023) es un indicador de los recursos asignados a cada región o municipio. Esta información es usada como una variable de entrada (input), ya que representa el esfuerzo financiero para mejorar la salud en las áreas que estás comparando.
@@ -171,7 +171,7 @@ Los valores 1.0000000 indican que esas unidades (en este caso, algunas categorí
 Los valores menores que 1, como 0.9211729 o 0.8052624, indican que esas unidades no están utilizando los recursos de manera tan eficiente como las que tienen un valor de eficiencia de 1. Por ejemplo, una eficiencia de 0.9211729 sugiere que se podría mejorar en alrededor del 8% para alcanzar la eficiencia máxima.
 
 Distribución de eficiencias:
-Vemos que algunas categorías tienen eficiencia máxima (1.0), mientras que otras tienen valores inferiores, lo que sugiere que hay algunas áreas donde el gasto en salud no está siendo tan efectivo en la reducción de la mortalidad.
+Se observa que algunas categorías tienen eficiencia máxima (1.0), mientras que otras tienen valores inferiores, lo que sugiere que hay algunas áreas donde el gasto en salud no está siendo tan efectivo en la reducción de la mortalidad.
 
 Url del Rstudio: 
 https://qo-dc.github.io/Optimization/Index.html
