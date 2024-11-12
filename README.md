@@ -84,12 +84,19 @@ Resultado: [1]  4 10  0  8  4  0
 El resultado [1] 4 10 0 8 4 0 que te muestra R corresponde al número óptimo de conductores que debes contratar para cubrir la demanda en cada franja horaria. Aquí está el desglose de lo que significa cada número:
 
 4: Debes contratar 4 conductores para el turno que empieza a las 0:00 (trabajan de 0 a 8 am).
+
 10: Debes contratar 10 conductores para el turno que empieza a las 4:00 (trabajan de 4 a 12 am).
+
 0: No es necesario contratar ningún conductor para el turno que empieza a las 8:00 (trabajan de 8 a 4 pm), ya que la demanda ya está cubierta por otros turnos.
+
 8: Debes contratar 8 conductores para el turno que empieza a las 12:00 (trabajan de 12 a 8 pm).
+
 4: Debes contratar 4 conductores para el turno que empieza a las 16:00 (trabajan de 4 a 12 am).
+
 0: No es necesario contratar ningún conductor para el turno que empieza a las 20:00 (trabajan de 8 pm a 4 am), ya que la demanda está cubierta por otros turnos.
+
 Explicación:
+
 El modelo de programación lineal ha optimizado el número de conductores necesarios para satisfacer la demanda en cada franja horaria de forma eficiente, minimizando el número total de conductores contratados.
 
 Para cumplir con la demanda en las franjas horarias donde hay una alta demanda de conductores (como de 4 am a 8 am o de 12 pm a 4 pm), se contratan más conductores.
