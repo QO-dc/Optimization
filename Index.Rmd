@@ -1,0 +1,86 @@
+---
+title: "Geo"
+author: "Edwin"
+date: "2024-10-28"
+output: html_document
+---
+
+```{r}
+# Cargar las librerías necesarias
+library(sf)
+library(dplyr)
+library(ggplot2)
+library(viridis)
+library(spdep)
+library(rio)
+library(tidyr)
+library(stringr)
+```
+
+C
+
+```{r}
+# Importar las bases de datos
+GINI <- import("basegini.XLS")
+PBI <- import("PBI.XLS")
+
+# Filtrar y seleccionar los resultados para GINI, renombrando la columna del año 2022
+GINI_resultados <- GINI %>%
+  filter(`Country Name` %in% c("Pakistán", "Brasil", "Perú")) %>%
+  select(`Country Name`, `2022`) %>%
+  rename(GINI_2022 = `2022`)
+
+# Agregar el valor de GINI manualmente para Pakistán si está faltante
+GINI_resultados <- GINI_resultados %>%
+  mutate(GINI_2022 = ifelse(`Country Name` == "Pakistán" & is.na(GINI_2022), 29.6, GINI_2022))
+
+# Filtrar y seleccionar los resultados para PBI, renombrando la columna del año 2022
+PBI_resultados <- PBI %>%
+  filter(`Country Name` %in% c("China")) %>%
+  select(`Country Name`, `2022`) %>%
+  rename(PBI_2022 = `2022`)
+
+# Unir ambas bases de datos por la columna "Country Name"
+datos_combinados <- full_join(GINI_resultados, PBI_resultados, by = "Country Name")
+
+# Ver los resultados combinados
+print(datos_combinados)
+```
+
+Análisis
+
+1.
+
+```{r}
+# Reemplazar los NA en GINI_2022 y PBI_2022 por 0
+datos_combinados <- datos_combinados %>%
+  mutate(GINI_2022 = ifelse(is.na(GINI_2022), 0, GINI_2022),
+         PBI_2022 = ifelse(is.na(PBI_2022), 0, PBI_2022))
+
+# Realizar el test de correlación entre GINI_2022 y PBI_2022
+cor_test_result <- cor.test(datos_combinados$GINI_2022, datos_combinados$PBI_2022)
+
+# Ver el resultado del test de correlación
+print(cor_test_result)
+```
+
+```{r}
+ggplot(datos_combinados, aes(x = GINI_2022, y = PBI_2022)) +
+  geom_point(color = "blue", size = 3) +  # Puntos azules
+  geom_smooth(method = "lm", se = FALSE, color = "red") +  # Línea de regresión en rojo
+  labs(
+    title = "Correlación entre GINI y PBI 2022",
+    x = "Índice GINI 2022",
+    y = "PBI 2022"
+  ) +
+  theme_minimal()
+```
+
+
+
+
+
+
+
+
+
